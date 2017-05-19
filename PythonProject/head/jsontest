@@ -1,0 +1,133 @@
+import json
+import sys
+import os
+import os.path
+
+class Stats:
+
+    def __init__(self, sequence):
+        # sequence of numbers we will process
+        # convert all items to floats for numerical processing
+        self.sequence = [float(item) for item in sequence]
+
+    def sum(self):
+        if len(self.sequence) < 1:
+            return None
+        else:
+            return sum(self.sequence)
+
+    def count(self):
+        return len(self.sequence)
+
+    def min(self):
+        if len(self.sequence) < 1:
+            return None
+        else:
+            return min(self.sequence)
+
+    def max(self):
+        if len(self.sequence) < 1:
+            return None
+        else:
+            return max(self.sequence)
+
+    def avg(self):
+        if len(self.sequence) < 1:
+            return None
+        else:
+            return sum(self.sequence) / len(self.sequence)
+
+    def median(self):
+        if len(self.sequence) < 1:
+            return None
+        else:
+            self.sequence.sort()
+            return self.sequence[len(self.sequence) // 2]
+
+    def stdev(self):
+        if len(self.sequence) < 1:
+            return None
+        else:
+            avg = self.avg()
+            sdsq = sum([(i - avg) ** 2 for i in self.sequence])
+            stdev = (sdsq / (len(self.sequence) - 1)) ** .5
+            return stdev
+
+    def percentile(self, percentile):
+        if len(self.sequence) < 1:
+            value = None
+        elif (percentile >= 100):
+            sys.stderr.write('ERROR: percentile must be < 100.  you supplied: %s\n'% percentile)
+            value = None
+        else:
+            element_idx = int(len(self.sequence) * (percentile / 100.0))
+            self.sequence.sort()
+            value = self.sequence[element_idx]
+        return value
+
+alpha_min_list = []
+alpha_max_list = []
+alpha_median_list = []
+alpha_stdev_list = []
+beta_min_list = []
+beta_max_list = []
+beta_median_list = []
+beta_stdev_list = []
+att_min_list = []
+att_max_list = []
+att_median_list = []
+att_stdev_list = []
+jsonfiles = []
+for root,dirs,files in os.walk('data'):
+    for file in files:
+        if file.__contains__('json'):
+            jsonfiles.append(file)
+            path = os.path.join(root,file)
+            with open(path,'r') as f:
+                data = json.load(f)
+                alpha = []
+                beta = []
+                att = []
+                for d in data:
+                    alpha.append(d['pw_alpha'])
+                    beta.append(d['pw_beta'])
+                    att.append(d['Att'])
+                alpha = Stats(alpha)
+                beta = Stats(beta)
+                att = Stats(att)
+
+                #alpha
+
+                alpha_min_list.append(alpha.min())
+                alpha_max_list.append(alpha.max())
+                alpha_median_list.append(alpha.median())
+                alpha_stdev_list.append(alpha.stdev())
+
+                #beta
+
+                beta_min_list.append(beta.min())
+                beta_max_list.append(beta.max())
+                beta_median_list.append(beta.median())
+                beta_stdev_list.append(beta.stdev())
+
+                #att
+
+                att_min_list.append(att.min())
+                att_max_list.append(att.max())
+                att_median_list.append(att.median())
+                att_stdev_list.append(att.stdev())
+
+
+print '         ',jsonfiles
+print 'alpha_min', alpha_min_list
+print 'alpha_max', alpha_max_list
+print 'alpha_median', alpha_median_list
+print 'alpha_stdev', alpha_stdev_list
+print 'beta_min', beta_min_list
+print 'beta_max', beta_max_list
+print 'beta_median', beta_median_list
+print 'beta_stdev', beta_stdev_list
+print 'att_min', att_min_list
+print 'att_max', att_max_list
+print 'att_median', att_median_list
+print 'att_stdev', att_stdev_list

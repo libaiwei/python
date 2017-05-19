@@ -1,0 +1,1 @@
+data_ear_head在较长时间att为1
