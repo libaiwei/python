@@ -14,7 +14,7 @@ def getdata(file):
     nrows = table.nrows
     images = []
     labels = []
-    path = '/Users/lbw/Desktop/Agg_AMT_Candidates/'
+    path = 'image/'
     for i in xrange(0,nrows,5):
         image = str(table.row_values(i)[0]).split('/')[-1]
         label = 0.0
@@ -32,6 +32,10 @@ def getdata(file):
         # plt.show()
         dim =(256,256)           #指定尺寸w*h
         resized =cv2.resize(image0,dim,interpolation = cv2.INTER_AREA)
+        # width = 256-227
+        # width_l = width/2
+        # width_r = width_l+227
+        # resized = resized[width_l:width_r, width_l:width_r, :]
         images.append(resized)
 
         # 展示裁剪效果
@@ -60,8 +64,8 @@ def getbatch(images, labels, batch_size):
     img_srt = np.array(img_srt)
     lab_srt = np.array(lab_srt)
     return (img_srt, lab_srt)
-train, train_labels = getdata('/Users/lbw/Desktop/img2.xlsx')
-test, test_labels = getdata('/Users/lbw/Desktop/img1.xlsx')
+train, train_labels = getdata('train.xlsx')
+test, test_labels = getdata('test.xlsx')
 sio.savemat('data.mat', {'train': train,'train_labels': train_labels,'test': test,'test_labels': test_labels})
 # batch = getbatch(images, labels, 50)
 # print batch[0]

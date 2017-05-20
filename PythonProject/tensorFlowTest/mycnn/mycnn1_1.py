@@ -44,16 +44,20 @@ b_conv2 = bias_variable([256])
 h_conv2 = tf.nn.relu(conv2d_1(h_pool1,w_conv2)+b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 #use tf.shape to output tensor format to transfer it into 1D vector
-#construct full connection and hidden nodes num. is 1024
-w_fc1 = weight_variable([8*8*256, 64])
+#construct first full connection and hidden nodes num. is 1024
+w_fc1 = weight_variable([8*8*256, 512])
 b_fc1 = bias_variable([64])
 h_pool2_flat = tf.reshape(h_pool2,[-1, 8*8*256])
 h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat,w_fc1)+b_fc1)
+#construct second full connection and hidden nodes num. is 1024
+w_fc2 = weight_variable([512, 24])
+b_fc2 = bias_variable([24])
+h_fc2 = tf.nn.relu(tf.matmul(h_fc1,w_fc2)+b_fc2)
 #abandon some nodes to avoid overfitting
 keep_prob = tf.placeholder(tf.float32)
-h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+h_fc1_drop = tf.nn.dropout(h_fc2, keep_prob)
 #connect output of dropout layer to softmax layer and get the last probability
-w_fc2 = weight_variable([64,2])
+w_fc2 = weight_variable([24,2])
 b_fc2 = bias_variable([2])
 y_conv = tf.nn.softmax(tf.matmul(h_fc1_drop, w_fc2) + b_fc2)
 #define cross Entropy using Adam. learning rate is 1e-4
@@ -68,7 +72,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 tf.global_variables_initializer().run()
 
 # 调用mycnn1
-data = sio.loadmat('/Users/lbw/Desktop/data.mat')
+data = sio.loadmat('data.mat')
 train = data['train']
 train_labels = data['train_labels']
 test = data['test']
