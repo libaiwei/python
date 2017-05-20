@@ -46,7 +46,7 @@ h_pool2 = max_pool_2x2(h_conv2)
 #use tf.shape to output tensor format to transfer it into 1D vector
 #construct first full connection and hidden nodes num. is 1024
 w_fc1 = weight_variable([8*8*256, 512])
-b_fc1 = bias_variable([64])
+b_fc1 = bias_variable([512])
 h_pool2_flat = tf.reshape(h_pool2,[-1, 8*8*256])
 h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat,w_fc1)+b_fc1)
 #construct second full connection and hidden nodes num. is 1024
