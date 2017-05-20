@@ -2,7 +2,7 @@
 import xlrd
 import tensorflow as tf
 import cv2
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 import random
 import numpy as np
 import scipy.io as sio
